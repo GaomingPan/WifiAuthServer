@@ -4,11 +4,11 @@ package cn.com.octodata.auth.model;
  * Created by aran on 16-3-4.
  */
 public class Output {
-    int cmd_id;
-    String gw_ac_id;
+    int     cmd_id;
+    String  gw_ac_id;
     boolean status;
-    String info;
-    String data;
+    String  info;
+    String  data;
 
     public int getCmd_id() {
         return cmd_id;

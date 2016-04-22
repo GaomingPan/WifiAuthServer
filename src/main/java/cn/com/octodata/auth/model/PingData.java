@@ -7,12 +7,13 @@ import java.util.List;
  * Created by aran on 16-2-24.
  */
 public class PingData {
-    private String areaId;//区域Id
-    private String gw_id;//检查网关id
-    private boolean wifidog_flag;//是否有wifidog
-    private DeviceData deviceData;//设备信息
-    private List<Client> clientList;//连接客户端列表
-    private WifidogStatus wifidog_status;//wifidog状态
+
+    private String areaId;                // 区域Id
+    private String gw_id;                 // 检查网关id
+    private boolean wifidog_flag;         // 是否有 wifidog
+    private DeviceData deviceData;        // 设备信息
+    private List<Client> clientList;      // 连接客户端列表
+    private WifidogStatus wifidog_status; // wifidog状态
 
     public String getAreaId() {
         return areaId;

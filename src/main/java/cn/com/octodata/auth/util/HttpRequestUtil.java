@@ -32,7 +32,7 @@ public class HttpRequestUtil {
             }
             urlConnection.getInputStream().close();
         } catch (Exception e) {
-            LOG.warn(e);
+            LOG.warn("=== httpRequestUtil.sendPost(...) Exception, url:[" + url + "],Exception messages: " +  e.getMessage() );
         }
     }
 }

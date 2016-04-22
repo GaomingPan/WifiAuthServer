@@ -6,6 +6,7 @@ import java.util.List;
  * Created by aran on 16-2-29.
  */
 public interface AccessService {
+
     String getCommandString(String deviceId);
 
     String offlineClients(String deviceId, List<String> clients) throws Exception;

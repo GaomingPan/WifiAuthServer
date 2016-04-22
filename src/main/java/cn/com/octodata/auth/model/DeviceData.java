@@ -5,19 +5,19 @@ package cn.com.octodata.auth.model;
  * Created by aran on 16-2-24.
  */
 public class DeviceData {
-    private String sys_uptime;//系统启动时长
-    private String sys_memfree;//系统空闲内存
-    private double sys_load;//系统负载
-    private String gw_mac;//网关mac
-    private String gw_ssid;//网关ssid
-    private int cpu_use;//CPU使用率
-    private String ac_version;//ac版本号
-    private String wan_ip;//wan接口ip
-    private long go_speed;//上传数率
-    private long come_speed;//下载数率
-    private long incoming;//下载流量
-    private long outgoing;//上传流量
-    private long timestamp;//检查网关id
+    private String sys_uptime;    // 系统启动时长
+    private String sys_memfree;   // 系统空闲内存
+    private double sys_load;      // 系统负载
+    private String gw_mac;        // 网关mac
+    private String gw_ssid;       // 网关ssid
+    private int cpu_use;          // CPU使用率
+    private String ac_version;    // ac版本号
+    private String wan_ip;        // wan接口ip
+    private long go_speed;        // 上传速率
+    private long come_speed;      // 下载速率
+    private long incoming;        // 下载流量
+    private long outgoing;        // 上传流量
+    private long timestamp;       // 检查网关id
 
     public DeviceData() {
         this.timestamp = System.currentTimeMillis();

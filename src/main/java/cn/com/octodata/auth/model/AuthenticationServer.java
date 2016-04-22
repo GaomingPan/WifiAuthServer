@@ -5,8 +5,8 @@ package cn.com.octodata.auth.model;
  * Created by aran on 16-2-29.
  */
 public class AuthenticationServer {
-    private String host;//认证服务器主机名
-    private String ip;//认证服务起ip地址
+    private String host;   // 认证服务器主机名
+    private String ip;     // 认证服务器ip地址
 
     public String getHost() {
         return host;

@@ -7,12 +7,12 @@ import java.util.List;
  * Created by aran on 16-2-29.
  */
 public class WifidogStatus {
-    private String version;//wifidog版本号
-    private String uptime;//wifidog在线时长
-    private int clients_served_session;//客户端认证次数
-    private int client_counter;//客户端在线人数
-    private List<String> clients;//客户端认证mac地址
-    private AuthenticationServer authentication_server;//认服证务器信息
+    private String version;                  // wifidog版本号
+    private String uptime;                   // wifidog在线时长
+    private int clients_served_session;      // 客户端认证次数
+    private int client_counter;              // 客户端在线人数
+    private List<String> clients;            // 客户端认证mac地址
+    private AuthenticationServer authentication_server; //认服证务器信息
 
     public String getVersion() {
         return version;

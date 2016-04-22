@@ -5,13 +5,13 @@ package cn.com.octodata.auth.model;
  * Created by aran on 16-2-24.
  */
 public class Client {
-    private String mac;//客户端mac地址
-    private String ip;//客户端ip地址
-    private long incoming;//客户端下载流量
-    private long outgoing;//客户端上传流量
-    private String hostname;//客户端主机名
-    private long go_speed;//客户端上传速度
-    private long come_speed;//客户端下载速度
+    private String mac;           // 客户端mac地址
+    private String ip;            // 客户端ip地址
+    private long incoming;        // 客户端下载流量
+    private long outgoing;        // 客户端上传流量
+    private String hostname;      // 客户端主机名
+    private long go_speed;        // 客户端上传速度
+    private long come_speed;      // 客户端下载速度
 
     public String getMac() {
         return mac;

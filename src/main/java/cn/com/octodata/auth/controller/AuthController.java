@@ -10,6 +10,8 @@ import cn.com.octodata.auth.util.AuthType;
 import cn.com.octodata.auth.util.Config;
 import cn.com.octodata.auth.util.MD5Util;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(value = "auth", produces = "application/json;charset=UTF-8")
 public class AuthController {
+
+    //接口的访问要记录日志：
+    private static final Log LOG = LogFactory.getLog(AccessController.class);
 
     //路由器参数
     private static final String GW_ID = "gw_id";//路由器Id
@@ -51,6 +56,8 @@ public class AuthController {
     public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         System.out.println("----------CALL LOGIN----------");
+        LOG.info("Call Login,");
+
 
         String gwId = request.getParameter(GW_ID);
         String userMac = request.getParameter(USER_MAC);

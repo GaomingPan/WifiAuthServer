@@ -40,28 +40,46 @@ public class AccessController {
 
     @RequestMapping("ping")
     public String ping(@RequestBody String pingDataJsonString) {
+
         try {
+
             PingData pingData = JSON.parseObject(pingDataJsonString, PingData.class);
+
             LOG.info(pingDataJsonString);
+
             pingData.setAreaId(bindingDao.get(pingData.getGw_id()));
+
             httpRequestUtil.sendPost(MQ_PING_DATA_URL, JSON.toJSONString(pingData));
+
             if (pingData.getWifidog_status().getClients().size() != 0) {
+
                 String offlineClientCommandString = accessService.offlineClients(pingData.getGw_id(), pingData.getWifidog_status().getClients());
+
                 if (offlineClientCommandString != null) {
+
                     LOG.info(offlineClientCommandString);
+
                     return offlineClientCommandString;
                 }
             }
+
             String commandString = accessService.getCommandString(pingData.getGw_id());
+
             if (commandString != null) {
+
                 LOG.info(commandString);
                 return commandString;
             }
+
             return "Pong";
+
         } catch (Exception e) {
-            LOG.warn(e);
+
+            LOG.warn("AccessController.ping(...) catch the Exception " + e);
+
             return "Pong";
         }
+
     }
 
     /**
@@ -72,14 +90,21 @@ public class AccessController {
      */
     @RequestMapping("output")
     public String output(@RequestBody String outputJsonString) {
+
         try {
+
             LOG.info(outputJsonString);
+
             Output output = JSON.parseObject(outputJsonString, Output.class);
+
             if (!output.isStatus()) {
+
                 return "Success";
             }
+
             switch (output.getCmd_id()) {
-                case 0://设备重启
+
+                case 0://设备重启，无信息返回
                     break;
                 case 1://同步设备参数设置
                     accessService.updateSync(output.getGw_ac_id(), output.getData());
@@ -96,14 +121,17 @@ public class AccessController {
                 case 5://更新定时重启设置
                     accessService.updateRebootTime(output.getGw_ac_id(), output.getData());
                     break;
-                case 6://更新黑白名单
+                case 6://更新黑白名单,无信息返回
                     break;
                 default:
                     break;
             }
+
             return "Success";
+
         } catch (Exception e) {
-            LOG.warn(e);
+
+            LOG.warn("AccessController.output(...) catch Exception: " + e);
             return "Success";
         }
     }

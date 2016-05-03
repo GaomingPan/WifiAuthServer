@@ -51,31 +51,34 @@ public class AccessController {
 
             httpRequestUtil.sendPost(MQ_PING_DATA_URL, JSON.toJSONString(pingData));
 
-            if (pingData.getWifidog_status().getClients().size() != 0) {
+            if (pingData.isWifidog_flag() && pingData.getWifidog_status().getClients().size() != 0) {
 
                 String offlineClientCommandString = accessService.offlineClients(pingData.getGw_id(), pingData.getWifidog_status().getClients());
 
                 if (offlineClientCommandString != null) {
 
-                    LOG.info(offlineClientCommandString);
+                    LOG.info("AccessController.ping(...), with command response command is: " + offlineClientCommandString);
 
                     return offlineClientCommandString;
                 }
             }
 
+
             String commandString = accessService.getCommandString(pingData.getGw_id());
 
             if (commandString != null) {
 
-                LOG.info(commandString);
+                LOG.info("AccessController.ping(...), with command response is: " + commandString);
                 return commandString;
             }
+
+            LOG.debug("AccessController.ping(...), NO command response.");
 
             return "Pong";
 
         } catch (Exception e) {
 
-            LOG.warn("AccessController.ping(...) catch the Exception " + e);
+            LOG.warn("AccessController.ping(...) catch the Exception:\n" + e);
 
             return "Pong";
         }
@@ -98,32 +101,40 @@ public class AccessController {
             Output output = JSON.parseObject(outputJsonString, Output.class);
 
             if (!output.isStatus()) {
-
+                LOG.info("AccessController.output(...), output.isStatus = " + output.isStatus());
                 return "Success";
             }
 
             switch (output.getCmd_id()) {
 
                 case 0://设备重启，无信息返回
+                    LOG.info("AccessController.output(...), cmd_id = 0, command action is reboot the device.");
                     break;
                 case 1://同步设备参数设置
+                    LOG.info("AccessController.output(...), cmd_id = 1, command action is Sync the device info.");
                     accessService.updateSync(output.getGw_ac_id(), output.getData());
                     break;
                 case 2://更新无线参数设置
+                    LOG.info("AccessController.output(...), cmd_id = 2, command action is update the device wireless settings.");
                     accessService.updateWireless(output.getGw_ac_id(), output.getData());
                     break;
                 case 3://更新DHCP设置
+                    LOG.info("AccessController.output(...), cmd_id = 3, command action is update the device DHCP settings.");
                     accessService.updateDHCP(output.getGw_ac_id(), output.getData());
                     break;
                 case 4://更新网络设置
+                    LOG.info("AccessController.output(...), cmd_id = 4, command action is update the device network settings.");
                     accessService.updateNetwork(output.getGw_ac_id(), output.getData());
                     break;
                 case 5://更新定时重启设置
+                    LOG.info("AccessController.output(...), cmd_id = 5, command action is update the device auto reboot time setting.");
                     accessService.updateRebootTime(output.getGw_ac_id(), output.getData());
                     break;
                 case 6://更新黑白名单,无信息返回
+                    LOG.info("AccessController.output(...), cmd_id = 6, command action is update the device firewall MAC list.");
                     break;
                 default:
+                    LOG.warn("AccessController.output(...), cmd_id = ?, command id invalid.");
                     break;
             }
 

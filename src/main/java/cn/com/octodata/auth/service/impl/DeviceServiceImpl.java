@@ -7,12 +7,15 @@ import cn.com.octodata.auth.model.BlackAndWhiteList;
 import cn.com.octodata.auth.model.Device;
 import cn.com.octodata.auth.model.DeviceSettings;
 import cn.com.octodata.auth.service.DeviceService;
+import cn.com.octodata.auth.util.Config;
+import cn.com.octodata.auth.util.JedisPool;
 import cn.com.octodata.auth.util.Result;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -212,20 +215,33 @@ public class DeviceServiceImpl extends BaseServiceImpl<Device, String> implement
 
             DeviceSettings oldDeviceSettings = deviceDao.selectDeviceSettings(deviceId);
 
-            if (oldDeviceSettings.getDisable() != newDeviceSettings.getDisable() || !oldDeviceSettings.getSsid().equals(newDeviceSettings.getSsid()) || !oldDeviceSettings.getEncryption().equals(newDeviceSettings.getEncryption()) || !oldDeviceSettings.getKey().equals(newDeviceSettings.getKey()) || oldDeviceSettings.getSsidHidden() != newDeviceSettings.getSsidHidden()) {
+            if (oldDeviceSettings.getDisable() != newDeviceSettings.getDisable() ||
+                    !oldDeviceSettings.getSsid().equals(newDeviceSettings.getSsid()) ||
+                    !oldDeviceSettings.getEncryption().equals(newDeviceSettings.getEncryption()) ||
+                    !oldDeviceSettings.getKey().equals(newDeviceSettings.getKey()) ||
+                    oldDeviceSettings.getSsidHidden() != newDeviceSettings.getSsidHidden()) {
+
                 commandDao.rPush(deviceId, "Pong | 2 | accmd_setwireless 2 " + deviceId + " " + newDeviceSettings.getDisable() + " " + newDeviceSettings.getSsid() + " " + newDeviceSettings.getEncryption() + " " + newDeviceSettings.getKey() + " " + newDeviceSettings.getSsidHidden());
             }
-            if (oldDeviceSettings.getStart() != newDeviceSettings.getStart() || oldDeviceSettings.getLimit() != newDeviceSettings.getLimit() || !oldDeviceSettings.getLeaseTime().equals(newDeviceSettings.getLeaseTime()) || oldDeviceSettings.getIgnore() != newDeviceSettings.getIgnore()) {
+
+            if (oldDeviceSettings.getStart() != newDeviceSettings.getStart() ||
+                    oldDeviceSettings.getLimit() != newDeviceSettings.getLimit() ||
+                    !oldDeviceSettings.getLeaseTime().equals(newDeviceSettings.getLeaseTime()) ||
+                    oldDeviceSettings.getIgnore() != newDeviceSettings.getIgnore()) {
+
                 commandDao.rPush(deviceId, "Pong | 3 | accmd_setdhcp 3 " + deviceId + " " + newDeviceSettings.getStart() + " " + newDeviceSettings.getLimit() + " " + newDeviceSettings.getLeaseTime() + " " + newDeviceSettings.getIgnore());
             }
-            if (!oldDeviceSettings.getIpAddress().equals(newDeviceSettings.getIpAddress()) || !oldDeviceSettings.getIpMask().equals(newDeviceSettings.getIpMask())) {
+            if (!oldDeviceSettings.getIpAddress().equals(newDeviceSettings.getIpAddress()) ||
+                    !oldDeviceSettings.getIpMask().equals(newDeviceSettings.getIpMask())) {
+
                 commandDao.rPush(deviceId, "Pong | 4 | accmd_setnetwork 4 " + deviceId + " lan static " + newDeviceSettings.getIpAddress() + " " + newDeviceSettings.getIpMask());
                 Device device = deviceDao.select(deviceId);
                 device.setIpAddress(newDeviceSettings.getIpAddress());
                 device.setIpMask(newDeviceSettings.getIpMask());
                 deviceDao.update(device);
             }
-            if (oldDeviceSettings.getAutoReboot() != newDeviceSettings.getAutoReboot() || !oldDeviceSettings.getRebootTime().equals(newDeviceSettings.getRebootTime())) {
+            if (oldDeviceSettings.getAutoReboot() != newDeviceSettings.getAutoReboot() ||
+                    !oldDeviceSettings.getRebootTime().equals(newDeviceSettings.getRebootTime())) {
                 if (newDeviceSettings.getAutoReboot() == 0) {
                     commandDao.rPush(deviceId, "Pong | 5 | accmd_setreboottime 5 " + deviceId);
                 } else {
@@ -238,6 +254,13 @@ public class DeviceServiceImpl extends BaseServiceImpl<Device, String> implement
             return JSON.toJSONString(new Result(false, e.getMessage()));
         }
     }
+
+//    public static void main(String[] args) {
+//        try (Jedis jedis = JedisPool.getResource()) {
+//            jedis.select(Config.getTableCommandIndex());
+//            System.out.printf(jedis.lpop("40A5EF846C16"));
+//        }
+//    }
 
     @Override
     public String getSettings(String deviceId) {

@@ -55,8 +55,7 @@ public class AuthController {
     @RequestMapping("login")
     public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        System.out.println("----------CALL LOGIN----------");
-        LOG.info("Call Login,");
+//      System.out.println("----------CALL LOGIN----------");
 
 
         String gwId = request.getParameter(GW_ID);
@@ -65,7 +64,10 @@ public class AuthController {
         String port = request.getParameter(GW_PORT);
         String url = request.getParameter(USER_URL);
 
+        LOG.info("AuthController.login(...), CALL LOGIN,  gw_id = " + gwId);
+
         if (gwId == null || userMac == null || address == null || port == null || url == null) {
+            LOG.warn("AuthController.login(...), error request parameter.");
             request.getRequestDispatcher("/error.jsp").forward(request, response);
             return;
         }
@@ -77,18 +79,22 @@ public class AuthController {
         UserAuthInfo userAuthInfo = userAuthInfoService.hGetUserAuthInfo(areaId, userMac);
         if (userAuthInfo != null && userAuthInfo.getOfflineTime() > System.currentTimeMillis()) {
             response.sendRedirect("http://" + address + ":" + port + "/wifidog/allow?url=" + url);
-            System.out.println("----------ALLOW LOGIN----------");
+            LOG.info("AuthController.login(...), ALLOW LOGIN, redirect url [ " + "http://" + address + ":" + port + "/wifidog/allow?url=" + url + " ]");
+//            System.out.println("----------ALLOW LOGIN----------");
             return;
         }
         AreaInfo areaInfo = areaInfoService.getAreaInfo(areaId);
         switch (areaInfo.getAuthType()) {
             case AuthType.AUTH_NONE:
+                LOG.info("AuthController.login(...), AuthType = " + AuthType.AUTH_NONE);
                 request.getRequestDispatcher("/default.jsp").forward(request, response);
                 break;
             case AuthType.AUTH_FREE:
+                LOG.info("AuthController.login(...), AuthType = " + AuthType.AUTH_FREE);
                 response.sendRedirect("http://" + address + ":" + port + "/wifidog/allow?url=" + url);
                 break;
             case AuthType.AUTH_ONE_KEY:
+                LOG.info("AuthController.login(...), AuthType = " + AuthType.AUTH_ONE_KEY);
                 request.setAttribute("areaId", areaId);
                 request.setAttribute("title", areaInfo.getTitle());
                 request.setAttribute("backgroundUrl", areaInfo.getBackgroundUrl());
@@ -111,9 +117,12 @@ public class AuthController {
                 request.setAttribute("backgroundUrl", areaInfo.getBackgroundUrl());
                 request.setAttribute("buttonUrl", areaInfo.getButtonUrl());
                 request.getRequestDispatcher("/portal.jsp").forward(request, response);
-                System.out.println("----------AUTH_WE_CHAT_ATTENTION----------");
+
+                LOG.info("AuthController.login(...), AUTH_WE_CHAT_ATTENTION, AuthType = " + AuthType.AUTH_WE_CHAT_ATTENTION);
+//                System.out.println("----------AUTH_WE_CHAT_ATTENTION----------");
                 break;
             default:
+                LOG.info("AuthController.login(...), AuthType = ? AuthType invalid.");
                 request.getRequestDispatcher("/default.jsp").forward(request, response);
                 break;
         }

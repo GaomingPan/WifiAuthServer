@@ -111,7 +111,6 @@
 <script type="text/javascript">
 
     setTimeout("$('body').css('background-image', 'url(<%=backgroundUrl%>)')", 500);//延时0.5秒
-
     setTimeout("document.getElementById('button').src = '<%=buttonUrl%>';", 500);//延时0.5秒
 
     $("body").height(document.body.scrollHeight);
@@ -129,7 +128,7 @@
                 release()
             },
             error: function () {
-                alert("认证服务器异常");
+                alert("认证服务器异常!稍后重试！");
             }
         });
     }
@@ -143,9 +142,9 @@
                 if (XMLHttpRequest.status == 200) {
                     document.getElementById("success_id").src = "http://captive.apple.com/";
                     Wechat_GotoRedirect('<%=appId%>', '<%=extend%>', '<%=timestamp%>', '<%=sign%>', '<%=shop_id%>', '<%=authUrl%>', '<%=mac%>', "");
-                    alert("Call WeChat!")
+                   /* alert("Call WeChat!")*/
                 } else {
-                    alert("路由器异常");
+                    alert("路由器异常!稍后重试！");
                 }
             }
         });
